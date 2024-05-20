@@ -1,0 +1,424 @@
+{
+    "root": {
+        "data": {
+            "id": "cx9gwoym4ds0",
+            "created": 1701075413986,
+            "text": "Reids"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "d1e213ib1ko0",
+                    "created": 1716165876004,
+                    "text": "Document",
+                    "layout_right_offset": {
+                        "x": -43,
+                        "y": 6
+                    },
+                    "note": "https://redis-stack.io/docs/data-types/sets/"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cx9gwt8w3fk0",
+                            "created": 1701075423315,
+                            "text": "DataTypes",
+                            "layout_right_offset": {
+                                "x": 4,
+                                "y": 1
+                            },
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cx9gy7jtfe00",
+                                    "created": 1701075532815,
+                                    "text": "String",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cx9gzj39f1c0",
+                                            "created": 1701075636299,
+                                            "text": "Commands",
+                                            "note": "`SET` stores a string value.\n`SETNX` stores a string value only if the key doesn't already exist. Useful for implementing locks.\n`GET` retrieves a string value.\n`MGET` retrieves multiple string values in a single operation."
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9h0g1z4eg0",
+                                            "created": 1701075708055,
+                                            "text": "Usage"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cx9h0ir32sg0",
+                                                    "created": 1701075713927,
+                                                    "text": "RequestLimiter"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cx9h0mj7vww0",
+                                                    "created": 1701075722159,
+                                                    "text": "Lock"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9hmraow2o0",
+                                            "created": 1701077456538,
+                                            "text": "Performance",
+                                            "note": "Most string operations are O(1), which means they're highly efficient. However, be careful with the SUBSTR, GETRANGE, and SETRANGE commands, which can be O(n). These random-access string commands may cause performance issues when dealing with large strings."
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cx9gyd0tsi00",
+                                    "created": 1701075544727,
+                                    "text": "List"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cx9h1nyqi9k0",
+                                            "created": 1701075803638,
+                                            "text": "Commands",
+                                            "note": "### Basic commands\n`LPUSH` adds a new element to the head of a list; `RPUSH` adds to the tail.\n`LPOP` removes and returns an element from the head of a list; `RPOP` does the same but from the tails of a list.\n`LLEN` returns the length of a list.\n`LMOVE` atomically moves elements from one list to another.\n`LTRIM` reduces a list to the specified range of elements.\n### Blocking commands\nLists support several blocking commands. For example:\n\n`BLPOP` removes and returns an element from the head of a list. If the list is empty, the command blocks until an element becomes available or until the specified timeout is reached.\n`BLMOVE` atomically moves elements from a source list to a target list. If the source list is empty, the command will block until a new element becomes available."
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9h4gy3f280",
+                                            "created": 1701076023454,
+                                            "text": "Usage"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cx9h4kjwltc0",
+                                                    "created": 1701076031303,
+                                                    "text": "MessageQueue",
+                                                    "note": "Communication between processes, using a consumer-producer pattern where the producer pushes items into a list, and a consumer (usually a worker) consumes those items and executes actions. Redis has special list commands to make this use case both more reliable and efficient."
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cx9h4p8p9vs0",
+                                                    "created": 1701076041510,
+                                                    "text": "Record Latest Update",
+                                                    "note": "Remember the latest updates posted by users into a social network."
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9hmewokds0",
+                                            "created": 1701077429570,
+                                            "text": "Performance",
+                                            "note": "List operations that access its head or tail are O(1), which means they're highly efficient. However, commands that manipulate elements within a list are usually O(n). Examples of these include LINDEX, LINSERT, and LSET. Exercise caution when running these commands, mainly when operating on large lists."
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cx9gyhzu3280",
+                                    "created": 1701075555551,
+                                    "text": "Set",
+                                    "note": "A Redis set is an unordered collection of unique strings (members)"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cx9h934nty80",
+                                            "created": 1701076385197,
+                                            "text": "Commands",
+                                            "note": "`SADD` adds a new member to a set.\n`SREM` removes the specified member from the set.\n`SISMEMBER` tests a string for set membership.\n`SINTER` returns the set of members that two or more sets have in common (i.e., the intersection).\n`SCARD` returns the size (a.k.a. cardinality) of a set."
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9hdxszv8o0",
+                                            "created": 1701076765428,
+                                            "text": "Usage",
+                                            "note": "* Track unique items (e.g., track all unique IP addresses accessing a given blog post).\n* Represent relations (e.g., the set of all users with a given role).\n* Perform common set operations such as intersection, unions, and differences."
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cx9hkkl83oo0",
+                                            "created": 1701077285210,
+                                            "text": "Performance",
+                                            "note": "Most set operations, including adding, removing, and checking whether an item is a set member, are O(1). This means that they're highly efficient. However, for large sets with hundreds of thousands of members or more, you should exercise caution when running the SMEMBERS command. This command is O(n) and returns the entire set in a single response. As an alternative, consider the SSCAN, which lets you retrieve all members of a set iteratively."
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cx9gyu6tpb40",
+                                    "created": 1701075582095,
+                                    "text": "Sorted Set"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cx9gyk8572o0",
+                                    "created": 1701075560407,
+                                    "text": "Hashes"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cx9gz4po3i80",
+                                    "created": 1701075605002,
+                                    "text": "Stream"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d1e21j422sg0",
+                    "created": 1716165909971,
+                    "text": "用法",
+                    "layout_right_offset": {
+                        "x": -42,
+                        "y": 4
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d1e21x3cx4g0",
+                            "created": 1716165940403,
+                            "text": "分布式锁",
+                            "note": "https://www.cnblogs.com/wangyingshuo/p/14510524.html"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d1e3br4z73k0",
+                                    "created": 1716169532192,
+                                    "text": "特征",
+                                    "note": "「互斥性」: 任意时刻，只有一个客户端能持有锁。\n「锁超时释放」：持有锁超时，可以释放，防止不必要的资源浪费，也可以防止死锁。\n「可重入性」:一个线程如果获取了锁之后,可以再次对其请求加锁。\n「高性能和高可用」：加锁和解锁需要开销尽可能低，同时也要保证高可用，避免分布式锁失效。\n「安全性」：锁只能被持有的客户端删除，不能被其他客户端删除"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d1e409lpnmw0",
+                                    "created": 1716171453126,
+                                    "text": "方案一:SETNX + EXPIRE",
+                                    "note": "### 不推荐\n这个方案中，setnx和expire两个命令分开了，「不是原子操作」。如果执行完setnx加锁，正要执行expire设置过期时间时，进程crash或者要重启维护了，那么这个锁就无法释放"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1e41avji280",
+                                            "created": 1716171534261,
+                                            "text": "说明",
+                                            "note": "SETNX 是SET IF NOT EXISTS的简写.日常命令格式是SETNX key value，如果 key不存在，则SETNX成功返回1，如果这个key已经存在了，则返回0"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d1e41nt9hfc0",
+                                            "created": 1716171562422,
+                                            "text": "code",
+                                            "note": "if（jedis.setnx(key_resource_id,lock_value) == 1）{ //加锁\n    expire（key_resource_id，100）; //设置过期时间\n    try {\n        do something  //业务请求\n    }catch(){\n  }\n  finally {\n       jedis.del(key_resource_id); //释放锁\n    }\n}"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1e42th8e7k0",
+                                    "created": 1716171653119,
+                                    "text": "方案二：SETNX + value值是(系统时间+过期时间)",
+                                    "note": "### 不推荐\n虽然解决了方案一发生异常时锁无法释放的问题，但：\n* 过期时间是客户端自己生成的（System.currentTimeMillis()是当前系统的时间），必须要求分布式环境下，每个客户端的时间必须同步。\n* 如果锁过期的时候，并发多个客户端同时请求过来，都执行jedis.getSet()，最终只能有一个客户端加锁成功，但是该客户端锁的过期时间，可能被别的客户端覆盖\n* 该锁没有保存持有者的唯一标识，可能被别的客户端释放/解锁。"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1e439du5400",
+                                            "created": 1716171687742,
+                                            "text": "说明",
+                                            "note": "为了解决方案一，「发生异常锁得不到释放的场景」，可以把过期时间放到setnx的value值里面。如果加锁失败，再拿出value值校验一下即可"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d1e43sy1ils0",
+                                            "created": 1716171730323,
+                                            "text": "code",
+                                            "note": "long expires = System.currentTimeMillis() + expireTime; //系统时间+设置的过期时间\nString expiresStr = String.valueOf(expires);\n\n// 如果当前锁不存在，返回加锁成功\nif (jedis.setnx(key_resource_id, expiresStr) == 1) {\n        return true;\n} \n// 如果锁已经存在，获取锁的过期时间\nString currentValueStr = jedis.get(key_resource_id);\n\n// 如果获取到的过期时间，小于系统当前时间，表示已经过期\nif (currentValueStr != null && Long.parseLong(currentValueStr) < System.currentTimeMillis()) {\n\n     // 锁已过期，获取上一个锁的过期时间，并设置现在锁的过期时间（不了解redis的getSet命令的小伙伴，可以去官网看下哈）\n    String oldValueStr = jedis.getSet(key_resource_id, expiresStr);\n    \n    if (oldValueStr != null && oldValueStr.equals(currentValueStr)) {\n         // 考虑多线程并发的情况，只有一个线程的设置值和当前值相同，它才可以加锁\n         return true;\n    }\n}\n        \n//其他情况，均返回加锁失败\nreturn false;\n}"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1e487b9a9c0",
+                                    "created": 1716172075054,
+                                    "text": "方案三：使用Lua脚本(包含SETNX + EXPIRE两条指令)",
+                                    "note": "可以使用Lua脚本来保证原子性（包含setnx和expire两条指令）\n疑问：该方案是否解决了方案二中分布式系统不同时区问题？"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1e48dk1bls0",
+                                            "created": 1716172088645,
+                                            "text": "说明",
+                                            "note": "redis会将整个lua脚本当作一个命令执行，是原子性的操作"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d1e48gddyj40",
+                                            "created": 1716172094773,
+                                            "text": "code",
+                                            "note": " String lua_scripts = \"if redis.call('setnx',KEYS[1],ARGV[1]) == 1 then\" +\n            \" redis.call('expire',KEYS[1],ARGV[2]) return 1 else return 0 end\";   \nObject result = jedis.eval(lua_scripts, Collections.singletonList(key_resource_id), Collections.singletonList(values));\n//判断是否成功\nreturn result.equals(1L);"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1e4av6xdww0",
+                                    "created": 1716172283763,
+                                    "text": "方案四：SET的扩展命令（SET EX PX NX）",
+                                    "note": "### 不推荐\n问题一：「锁过期释放了，业务还没执行完」。假设线程a获取锁成功，一直在执行临界区的代码。但是100s过去后，它还没执行完。但是，这时候锁已经过期了，此时线程b又请求过来。显然线程b就可以获得锁成功，也开始执行临界区的代码。那么问题就来了，临界区的业务代码都不是严格串行执行的啦。\n问题二：「锁被别的线程误删」。假设线程a执行完后，去释放锁。但是它不知道当前的锁可能是线程b持有的（线程a去释放锁时，有可能过期时间已经到了，此时线程b进来占有了锁）。那线程a就把线程b的锁释放掉了，但是线程b临界区业务代码可能都还没执行完呢。"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1e4b0y98bs0",
+                                            "created": 1716172296299,
+                                            "text": "说明",
+                                            "note": "除了使用，使用Lua脚本，保证SETNX + EXPIRE两条指令的原子性，我们还可以巧用Redis的SET指令扩展参数！（SET key value[EX seconds][PX milliseconds][NX|XX]），它也是原子性的！\n\nSET key value[EX seconds][PX milliseconds][NX|XX]\n\nNX :表示key不存在的时候，才能set成功，也即保证只有第一个客户端请求才能获得锁，而其他客户端请求只能等其释放锁，才能获取。\nEX seconds :设定key的过期时间，时间单位是秒。\nPX milliseconds: 设定key的过期时间，单位为毫秒\nXX: 仅当key存在时设置值"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d1e4b19hha80",
+                                            "created": 1716172296978,
+                                            "text": "code",
+                                            "note": "if（jedis.set(key_resource_id, lock_value, \"NX\", \"EX\", 100s) == 1）{ //加锁\n    try {\n        do something  //业务处理\n    }catch(){\n  }\n  finally {\n       jedis.del(key_resource_id); //释放锁\n    }\n}"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "d1e22606uvs0",
+                            "created": 1716165959803,
+                            "text": "分布式缓存"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d1e22f4ghkw0",
+                            "created": 1716165979652,
+                            "text": "延迟队列"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d1e2s1dmcp40",
+                    "created": 1716167987199,
+                    "text": "注意事项"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d1e2s7n2lb40",
+                            "created": 1716168000831,
+                            "text": "缓存雪崩",
+                            "note": "在某个时间点大量key一起失效，可能导致db无法承受高并发量而崩溃，在设置热点数据过期时间时尽量设置不同的过期时间，减少同时访问db的风险"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d1e2se3irwg0",
+                            "created": 1716168014887,
+                            "text": "缓存穿透",
+                            "note": "概念：每次查询都无法从redis获取，而直接查询db，但db查询无资料，返回null，导致key无法设置到redis中，后续查询也直接从db获取，高并发下有db崩溃风险\n方案：\n1. 若db返回结果为null，设置一个默认过期时间，避免查询直达db"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d1e2shyg55k0",
+                            "created": 1716168023287,
+                            "text": "缓存击穿",
+                            "note": "概念：某个热点key突然失效，大量请求涌入DB\n方案：设置锁（分布式系统则设置分布式锁）"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d1e33zyqjqg0",
+                    "created": 1716168924492,
+                    "text": "使用场景",
+                    "note": "1数据缓存(不做过多介绍)\n\n2.手机验证码多长时间过期(可通过设置key的过期时间实现)\n\n3.积分排行(设置key的过期时间，然后定时做统计)\n\n4.计算器(单线程计数，不考虑并发情况下的数据不一致问题)\n\n5.限流(通过设置某个ip的在1分钟内访问次数，来达到限流效果)\n\n6.消息队列\n\n7.分布式锁\n\n8.热门列表(根据访问次数来进行统计)\n\n9.限制登录次数(如果密码错了就计算1次，设置一个过期时间，连错5次就锁定此账号)\n\n10.唯一登录，在系统登录成功后记录这个账号信息，如果此账号在其他地方又登录，就清除某个token信息\n\n11.token信息保存，刚好对应sprong-session中的核心处理"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "d1e38s372q80",
+                    "created": 1716169299169,
+                    "text": "待补充",
+                    "note": "主从复制的原理和实现\n\n哨兵机制的原理和实现\n\nredis事务的原理和实现\n\n发布订阅机制的原理和实现\n\nrdb和aof和实现\n\n以及几个使用场景的实现"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
