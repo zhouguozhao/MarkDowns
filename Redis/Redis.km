@@ -245,16 +245,7 @@
                                             "text": "说明",
                                             "note": "SETNX 是SET IF NOT EXISTS的简写.日常命令格式是SETNX key value，如果 key不存在，则SETNX成功返回1，如果这个key已经存在了，则返回0"
                                         },
-                                        "children": [
-                                            {
-                                                "data": {
-                                                    "id": "d1e5dq65ky00",
-                                                    "created": 1716175329035,
-                                                    "text": "test"
-                                                },
-                                                "children": []
-                                            }
-                                        ]
+                                        "children": []
                                     },
                                     {
                                         "data": {
@@ -350,6 +341,61 @@
                                         "children": []
                                     }
                                 ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1ed5ppsc8g0",
+                                    "created": 1716197270011,
+                                    "text": "方案五：SET EX PX NX  + 校验唯一随机值,再删除",
+                                    "note": "既然方案四锁可能被别的线程误删，那我们给value值设置一个标记当前线程唯一的随机数，在删除的时候，校验一下"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1ed6olg0sg0",
+                                            "created": 1716197345936,
+                                            "text": "說明"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d1ed6ozhdk00",
+                                            "created": 1716197346784,
+                                            "text": "code",
+                                            "note": "if（jedis.set(key_resource_id, uni_request_id, \"NX\", \"EX\", 100s) == 1）{ //加锁\n    try {\n        do something  //业务处理\n    }catch(){\n  }\n  finally {\n       //判断是不是当前线程加的锁,是才释放\n       if (uni_request_id.equals(jedis.get(key_resource_id))) {\n        jedis.del(lockKey); //释放锁\n        }\n    }\n}\n\n在这里，「判断是不是当前线程加的锁」和「释放锁」不是一个原子操作。如果调用jedis.del()释放锁的时候，可能这把锁已经不属于当前客户端，会解除他人加的锁。\n\n为了更严谨，一般也是用lua脚本代替。lua脚本如下：\nif redis.call('get',KEYS[1]) == ARGV[1] then \n   return redis.call('del',KEYS[1]) \nelse\n   return 0\nend;"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1ed80g5pfk0",
+                                    "created": 1716197450102,
+                                    "text": "方案六：Redisson框架",
+                                    "note": "方案五还是可能存在「锁过期释放，业务没执行完」的问题。有些小伙伴认为，稍微把锁过期时间设置长一些就可以啦。其实我们设想一下，是否可以给获得锁的线程，开启一个定时守护线程，每隔一段时间检查锁是否还存在，存在则对锁的过期时间延长，防止锁过期提前释放。"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d1edbjchqhc0",
+                                            "created": 1716197726331,
+                                            "text": "說明",
+                                            "note": "只要线程一加锁成功，redisso就会启动一个watch dog看门狗，它是一个后台线程，会每隔10秒检查一下，如果线程1还持有锁，那么就会不断的延长锁key的生存时间。因此，Redisson就是使用Redisson解决了「锁过期释放，业务没执行完」问题。"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d1edc5w5o7s0",
+                                    "created": 1716197775410,
+                                    "text": "方案七：多机实现的分布式锁Redlock+Redisson",
+                                    "note": "前面六种方案都只是基于单机版的讨论，还不是很完美。其实Redis一般都是集群部署的"
+                                },
+                                "children": []
                             }
                         ]
                     },
