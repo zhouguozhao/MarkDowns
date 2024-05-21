@@ -393,7 +393,7 @@
                                     "id": "d1edc5w5o7s0",
                                     "created": 1716197775410,
                                     "text": "方案七：多机实现的分布式锁Redlock+Redisson",
-                                    "note": "前面六种方案都只是基于单机版的讨论，还不是很完美。其实Redis一般都是集群部署的"
+                                    "note": "###詳情參考MarkDown 1.1.1\n前面六种方案都只是基于单机版的讨论，还不是很完美。其实Redis一般都是集群部署的\n如果线程一在Redis的master节点上拿到了锁，但是加锁的key还没同步到slave节点。恰好这时，master节点发生故障，一个slave节点就会升级为master节点。线程二就可以获取同个key的锁啦，但线程一也已经拿到锁了，锁的安全性就没了。\n\n为了解决这个问题，Redis作者 antirez提出一种高级的分布式锁算法：Redlock。\n"
                                 },
                                 "children": []
                             }
