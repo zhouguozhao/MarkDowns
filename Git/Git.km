@@ -1,0 +1,23 @@
+{
+    "root": {
+        "data": {
+            "id": "d1ru7dly2x40",
+            "created": 1717565638691,
+            "text": "Git"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "d1ru8gflv4o0",
+                    "created": 1717565723202,
+                    "text": "命令",
+                    "note": "https://git-scm.com/docs"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
