@@ -1,5 +1,41 @@
 <h1 align="center">JVM</h1>
 
+
+
+#### 2.2 運行時數據區域
+
+![](G:\gitRepos\MarkDowns\MarkDowns\JVM\Resources\JVM runtime area.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 解决JDK11目录下没有jre的问题
 
 > JDK11开始已经不会自动生成jre目录了，需要自己在jdk根目录下执行一下命令
@@ -78,3 +114,4 @@ jinfo -flags pid(进程号) //查看java进程的JVM参数
 > **Resolution:** This can happen on Windows systems if the username contains capitalized letters. In this case, username is `UserName` but the jvmstat directory created by JDK is `%TMP%\hsperfdata_username`. To workaround the problem, exit all Java applications, delete the `%TMP%\hsperfdata_username` directory and create new `%TMP%\hsperfdata_UserName` directory.
 
 此問題一般發生在windows系統，原因是進程文件夾名稱中的用戶名大小寫與windows用戶大小寫不一致，將`%TMP%\hsperfdata_username`文件夾刪掉，重新新建一個`%TMP%\hsperfdata_UserName`文件夾即可，其中UserName大小寫要與windows用戶大小寫一致。
+
