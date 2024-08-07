@@ -1,0 +1,86 @@
+{
+    "root": {
+        "data": {
+            "id": "d38f16i6sh40",
+            "created": 1722905514096,
+            "text": "Spring"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "d38f1h0lqi00",
+                    "created": 1722905536977,
+                    "text": "SpringCache"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d38f21tv7ns0",
+                            "created": 1722905582282,
+                            "text": "Annotations"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d38f35nncgg0",
+                                    "created": 1722905668977,
+                                    "text": "@Cachable",
+                                    "note": "The simplest way to enable caching behavior for a method is to demarcate it with @Cacheable, and parameterize it with the name of the cache where the results would be stored:\n```\n@Cacheable(\"addresses\")\npublic String getAddress(Customer customer) {...}\n```\nThe getAddress() call will first check the cache addresses before actually invoking the method and then caching the result.\n\nWhile in most cases one cache is enough, the Spring framework also supports multiple caches to be passed as parameters:\n```\n@Cacheable({\"addresses\", \"directory\"})\npublic String getAddress(Customer customer) {...}\n```\nIn this case, if any of the caches contain the required result, the result is returned and the method is not invoked."
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d38f49f7bqo0",
+                                    "created": 1722905755538,
+                                    "text": "@CacheEvict",
+                                    "note": "Now, what would be the problem with making all methods @Cacheable?\n\nThe problem is size. *We don’t want to populate the cache with values that we don’t need often.* Caches can grow quite large, quite fast, and we could be holding on to a lot of stale or unused data.\n\nWe can use the @CacheEvict annotation to indicate the removal of one or more/all values so that fresh values can be loaded into the cache again:\n```\n@CacheEvict(value=\"addresses\", allEntries=true)\npublic String getAddress(Customer customer) {...}\n```\nHere we’re using the additional parameter allEntries in conjunction with the cache to be emptied; this will clear all the entries in the cache addresses and prepare it for new data."
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d38f6vdou680",
+                                    "created": 1722905960064,
+                                    "text": "@CachePut",
+                                    "note": "While @CacheEvict reduces the overhead of looking up entries in a large cache by removing stale and unused entries, we want to avoid evicting too much data out of the cache.\n\nInstead, we selectively update the entries whenever we alter them.\n\nWith the @CachePut annotation, we can update the content of the cache without interfering with the method execution. That is, the method will always be executed and the result cached:\n```\n@CachePut(value=\"addresses\")\npublic String getAddress(Customer customer) {...}\n```\nThe difference between @Cacheable and @CachePut is that @Cacheable will skip running the method, whereas @CachePut will actually run the method and then put its results in the cache."
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d38f8fu6mow0",
+                                    "created": 1722906082961,
+                                    "text": "@Caching",
+                                    "note": "What if we want to use multiple annotations of the same type for caching a method? Let’s look at an incorrect example:\n```\n@CacheEvict(\"addresses\")\n@CacheEvict(value=\"directory\", key=customer.name)\npublic String getAddress(Customer customer) {...}\n```\nThe above code would fail to compile since Java does not allow multiple annotations of the same type to be declared for a given method.\n\nThe workaround to the above issue would be:\n```\n@Caching(evict = { \n  @CacheEvict(\"addresses\"), \n  @CacheEvict(value=\"directory\", key=\"#customer.name\") })\npublic String getAddress(Customer customer) {...}\n```\nAs shown in the code snippet above, we can group multiple caching annotations with @Caching, and use it to implement our own customized caching logic."
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d38fbdhsva00",
+                                    "created": 1722906312952,
+                                    "text": "@CacheConfig",
+                                    "note": "With the @CacheConfig annotation, we can streamline some of the cache configuration into a single place at the class level, so that we don’t have to declare things multiple times:\n```\n@CacheConfig(cacheNames={\"addresses\"})\npublic class CustomerDataService {\n\n    @Cacheable\n    public String getAddress(Customer customer) {...}\n```"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d38fd5n7i740",
+                                    "created": 1722906452592,
+                                    "text": "ConditionalCacheing",
+                                    "note": "Sometimes, caching might not work well for a method in all situations.\n\nReusing our example from the @CachePut annotation, this will both execute the method as well as cache the results each and every time:\n```\n@CachePut(value=\"addresses\")\npublic String getAddress(Customer customer) {...}\n```\n5.1. Condition Parameter\nIf we want more control over when the annotation is active, we can parameterize @CachePut with a condition parameter that takes a SpEL expression and ensures that the results are cached based on evaluating that expression:\n```\n@CachePut(value=\"addresses\", condition=\"#customer.name=='Tom'\")\npublic String getAddress(Customer customer) {...}\n```\n5.2. Unless Parameter\nWe can also control the caching based on the output of the method rather than the input via the unless parameter:\n```\n@CachePut(value=\"addresses\", unless=\"#result.length()<64\")\npublic String getAddress(Customer customer) {...}\n```\nThe above annotation would cache addresses unless they were shorter than 64 characters.\n\nIt’s important to know that the condition and unless parameters can be used in conjunction with all the caching annotations.\n\nThis kind of conditional caching can prove quite effective for managing large results. It’s also useful for customizing behavior based on input parameters instead of enforcing a generic behavior to all operations."
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

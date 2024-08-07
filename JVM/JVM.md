@@ -30,7 +30,15 @@
 
 
 
+##### 產生heapdump文件
 
+> 實時導出：
+>
+> *jmap -dump:live,format=b,file=heap.hprof <pid>*
+>
+> 發生OOM報錯時自動導出
+>
+> -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=目錄
 
 
 
