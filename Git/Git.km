@@ -14,10 +14,28 @@
                     "note": "https://git-scm.com/docs"
                 },
                 "children": []
+            },
+            {
+                "data": {
+                    "id": "d38w5vyg5940",
+                    "created": 1722953841824,
+                    "text": "常见问题"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d38w63fkhqw0",
+                            "created": 1722953858096,
+                            "text": "生成publicKey",
+                            "note": "##### ed25519算法\nssh-keygen -t ed25519 -C \"your_email@example.com\"\n\n##### RSA算法\nssh-keygen -t rsa -b 4096 -C \"your_email@example.com\"\n"
+                        },
+                        "children": []
+                    }
+                ]
             }
         ]
     },
-    "template": "default",
+    "template": "right",
     "theme": "fresh-blue",
     "version": "1.4.43"
 }
