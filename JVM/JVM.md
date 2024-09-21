@@ -8,11 +8,19 @@
 
 
 
+#### 2.3.2 對象的內存佈局
 
+**1. 對象頭MarkWord**
 
+![](G:\gitRepos\MarkDowns\MarkDowns\JVM\Resources\ObjectHeaderMarkWord.bmp)
 
+**2. 用句柄訪問對象**
 
+![](G:\gitRepos\MarkDowns\MarkDowns\JVM\Resources\ObjectAccessByHandle.png)
 
+**3. 直接訪問對象**
+
+![](G:\gitRepos\MarkDowns\MarkDowns\JVM\Resources\ObjectAccessDirectly.png)
 
 
 
