@@ -10,7 +10,12 @@
                 "data": {
                     "id": "d2gk8gqqoyo0",
                     "created": 1720076511693,
-                    "text": "自動內存管理"
+                    "text": "自動內存管理",
+                    "layout_mind_offset": {
+                        "x": -78,
+                        "y": -75
+                    },
+                    "expandState": "collapse"
                 },
                 "children": [
                     {
@@ -254,7 +259,8 @@
                             "id": "d4475b2gdc00",
                             "created": 1726133187219,
                             "text": "Chapter3 垃圾收集器與內存分配策略",
-                            "note": "·哪些内存需要回收？\n·什么时候回收？\n·如何回收？"
+                            "note": "·哪些内存需要回收？\n·什么时候回收？\n·如何回收？",
+                            "expandState": "collapse"
                         },
                         "children": [
                             {
@@ -840,7 +846,8 @@
                                             "id": "d4bmytfynbk0",
                                             "created": 1726888736124,
                                             "text": "3.5.7 Garbage First收集器",
-                                            "note": "JDK 9发布之\n日，G1宣告取代Parallel Scavenge加Parallel Old组合，成为服务端模式下的默认垃圾收集器，而CMS则\n沦落至被声明为不推荐使用（Deprecate）的收集器\n\n\n"
+                                            "note": "JDK 9发布之\n日，G1宣告取代Parallel Scavenge加Parallel Old组合，成为服务端模式下的默认垃圾收集器，而CMS则\n沦落至被声明为不推荐使用（Deprecate）的收集器\n\n\n",
+                                            "expandState": "collapse"
                                         },
                                         "children": [
                                             {
@@ -992,9 +999,115 @@
                                 "data": {
                                     "id": "d4brg2lsnm80",
                                     "created": 1726901372698,
-                                    "text": "3.6 低延遲垃圾收集器"
+                                    "text": "3.6 低延遲垃圾收集器",
+                                    "expandState": "collapse"
                                 },
-                                "children": []
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4ebmmrkeqw0",
+                                            "created": 1727161428879,
+                                            "text": "3.6.1 Shenandoah收集器",
+                                            "layout_right_offset": {
+                                                "x": -31,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "d4ebnyb2huw0",
+                                                    "created": 1727161532367,
+                                                    "text": "與G1異同"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "d4ebo3l66540",
+                                                            "created": 1727161543862,
+                                                            "text": "同",
+                                                            "note": "Shenandoah反而更像是G1\n的下一代继承者，它们两者有着相似的堆内存布局，在初始标记、并发标记等许多阶段的处理思路上\n都高度一致，甚至还直接共享了一部分实现代码，这使得部分对G1的打磨改进和Bug修改会同时反映\n在Shenandoah之上，而由于Shenandoah加入所带来的一些新特性，也有部分会出现在G1收集器中，譬\n如在并发失败后作为“逃生门”的Full GC[3]，G1就是由于合并了Shenandoah的代码才获得多线程Full\nGC的支持。\n\nShenandoah也是使用基于Region的堆内存布局，同样\n有着用于存放大对象的Humongous Region，默认的回收策略也同样是优先处理回收价值最大的\nRegion"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "d4ebo6qg0600",
+                                                            "created": 1727161550711,
+                                                            "text": "異",
+                                                            "note": "1. 最重要的当然是支持并发的整理算法，G1的回收阶段是可以多线程并行的，但却不能与用户线程并发\n\n2. Shenandoah（截止jdk13發佈之時）是默认不使用分代收集的，换言之，不会有专门的新生代Region或者老年代Region的存在，没有实现分代，并不是说分代对Shenandoah没有价值，这更多是出于性价比的权衡，基于工作量上的考虑而将其放到优先级较低的位置上\n\n3. Shenandoah摒弃了在G1中耗费大量内存和计算资源去维护的记忆集，改用名为“连接矩阵”（ConnectionMatrix）的全局数据结构来记录跨Region的引用关系，降低了处理跨代指针时的记忆集维护消耗，也降低了伪共享问题（见3.4.4节）的发生概率"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "d4ebrmad3340",
+                                                    "created": 1727161819660,
+                                                    "text": "工作過程",
+                                                    "note": "`初始标记`（Initial Marking）：与G1一样，首先标记与GC Roots直接关联的对象，这个阶段仍\n是“Stop The World”的，但停顿时间与堆大小无关，只与GC Roots的数量相关。\n`并发标记`（Concurrent Marking）：与G1一样，遍历对象图，标记出全部可达的对象，这个阶段\n是与用户线程一起并发的，时间长短取决于堆中存活对象的数量以及对象图的结构复杂程度。\n`最终标记`（Final Marking）：与G1一样，处理剩余的SATB扫描，并在这个阶段统计出回收价值\n最高的Region，将这些Region构成一组回收集（Collection Set）。最终标记阶段也会有一小段短暂的停\n顿。\n`并发清理`（Concurrent Cleanup）：这个阶段用于清理那些整个区域内连一个存活对象都没有找到\n的Region（这类Region被称为Immediate Garbage Region）。\n`并发回收`（Concurrent Evacuation）：并发回收阶段是Shenandoah与之前HotSpot中其他收集器的\n核心差异。在这个阶段，Shenandoah要把回收集里面的存活对象先复制一份到其他未被使用的Region之\n中。复制对象这件事情如果将用户线程冻结起来再做那是相当简单的，但如果两者必须要同时并发进\n行的话，就变得复杂起来了。其困难点是在移动对象的同时，用户线程仍然可能不停对被移动的对象\n进行读写访问，移动对象是一次性的行为，但移动之后整个内存中所有指向该对象的引用都还是旧对\n象的地址，这是很难一瞬间全部改变过来的。对于并发回收阶段遇到的这些困难，Shenandoah将会通\n过读屏障和被称为“Brooks Pointers”的转发指针来解决（讲解完Shenandoah整个工作过程之后笔者还要\n再回头介绍它）。并发回收阶段运行的时间长短取决于回收集的大小。\n`初始引用更新`（Initial Update Reference）：并发回收阶段复制对象结束后，还需要把堆中所有指\n向旧对象的引用修正到复制后的新地址，这个操作称为引用更新。引用更新的初始化阶段实际上并未\n做什么具体的处理，设立这个阶段只是为了建立一个线程集合点，确保所有并发回收阶段中进行的收\n集器线程都已完成分配给它们的对象移动任务而已。初始引用更新时间很短，会产生一个非常短暂的\n停顿。\n`并发引用更新`（Concurrent Update Reference）：真正开始进行引用更新操作，这个阶段是与用户\n线程一起并发的，时间长短取决于内存中涉及的引用数量的多少。并发引用更新与并发标记不同，它\n不再需要沿着对象图来搜索，只需要按照内存物理地址的顺序，线性地搜索出引用类型，把旧值改为\n新值即可。\n`最终引用更新`（Final Update Reference）：解决了堆中的引用更新后，还要修正存在于GC Roots\n中的引用。这个阶段是Shenandoah的最后一次停顿，停顿时间只与GC Roots的数量相关。\n`并发清理`（Concurrent Cleanup）：经过并发回收和引用更新之后，整个回收集中所有的Region已\n再无存活对象，这些Region都变成Immediate Garbage Regions了，最后再调用一次并发清理过程来回收\n这些Region的内存空间，供以后新对象分配使用。\n以上对Shenandoah收集器这九个阶段的工作过程的描述可能拆分得略为琐碎，读者只要抓住其中\n三个最重要的并发阶段（并发标记、并发回收、并发引用更新），就能比较容易理清Shenandoah是如\n何运作的了。图3-16[5]中黄色的区域代表的是被选入回收集的Region，绿色部分就代表还存活的对\n象，蓝色就是用户线程可以用来分配对象的内存Region了。图3-16中不仅展示了Shenandoah三个并发阶\n段的工作过程，还能形象地表示出并发标记阶段如何找出回收对象确定回收集，并发回收阶段如何移\n动回收集中的存活对象，并发引用更新阶段如何将指向回收集中存活对象的所有引用全部修正，此后\n回收集便不存在任何引用可达的存活对象了。"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "d4ecgwatmhc0",
+                                                    "created": 1727163800560,
+                                                    "text": "並行收集",
+                                                    "expandState": "expand"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "d4ech3slpuo0",
+                                                            "created": 1727163816872,
+                                                            "text": "內存保護陷阱",
+                                                            "note": "在被移动对象原有的内存上设置保护陷阱（Memory\nProtection Trap），一旦用户程序访问到归属于旧对象的内存空间就会产生自陷中段，进入预设好的异\n常处理器中，再由其中的代码逻辑把访问转发到复制后的新对象上。虽然确实能够实现对象移动与用\n户线程并发，但是如果没有操作系统层面的直接支持，这种方案将导致用户态频繁切换到核心态，\n代价是非常大的，不能频繁使用"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "d4ebz7q5vz40",
+                                                            "created": 1727162414877,
+                                                            "text": "BrooksPointer（轉發指針）",
+                                                            "note": "在原有对象布局结构的最前面统一增加一个\n新的引用字段，在正常不处于并发移动的情况下，该引用指向对象自己\n\n从结构上来看，Brooks提出的转发指针与某些早期Java虚拟机使用过的句柄定位（关于对象定位\n详见第2章）有一些相似之处，两者都是一种间接性的对象访问方式，差别是句柄通常会统一存储在专\n门的句柄池中，而转发指针是分散存放在每一个对象头前面\n\n有了转发指针之后，有何收益暂且不论，所有间接对象访问技术的缺点都是相同的，也是非常显\n著的——每次对象访问会带来一次额外的转向开销，尽管这个开销已经被优化到只有一行汇编指令的\n程度\n\n转发指针加入后带来的收益自然是当对象拥有了一份新的副本时，只需要修\n改一处指针的值，即旧对象上转发指针的引用位置，使其指向新对象，便可将所有对该对象的访问转\n发到新的副本上。这样只要旧对象的内存仍然存在，未被清理掉，虚拟机内存中所有通过旧引用地址\n访问的代码便仍然可用，都会被自动转发到新对象上继续工作"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "d4ecjbwb7ps0",
+                                                                    "created": 1727163991239,
+                                                                    "text": "線程競爭問題",
+                                                                    "note": "1）收集器线程复制了新的对象副本；\n2）用户线程更新对象的某个字段；\n3）收集器线程更新转发指针的引用值为新副本地址。\n如果不做任何保护措施，让事件2在事件1、事件3之间发生的话，将导致的结果就是用户线程对对\n象的变更发生在旧对象上，所以这里必须针对转发指针的访问操作采取同步措施，让收集器线程或者\n用户线程对转发指针的访问只有其中之一能够成功，另外一个必须等待，避免两者交替进行。实际上\nShenandoah收集器是通过比较并交换（Compare And Swap，CAS）操作[8]来保证并发时对象的访问正\n确性的"
+                                                                },
+                                                                "children": []
+                                                            },
+                                                            {
+                                                                "data": {
+                                                                    "id": "d4ecjlo3wrk0",
+                                                                    "created": 1727164012511,
+                                                                    "text": "執行效率",
+                                                                    "note": "转发指针另一点必须注意的是执行频率的问题，尽管通过对象头上的Brooks Pointer来保证并发时\n原对象与复制对象的访问一致性，这件事情只从原理上看是不复杂的，但是“对象访问”这四个字的分\n量是非常重的，对于一门面向对象的编程语言来说，对象的读取、写入，对象的比较，为对象哈希值\n计算，用对象加锁等，这些操作都属于对象访问的范畴，它们在代码中比比皆是，要覆盖全部对象访\n问操作，Shenandoah不得不同时设置读、写屏障去拦截。\n\n為避免大量的讀屏障引起的性能開銷，计划在JDK 13中将Shenandoah的内存屏障模型改\n进为基于引用访问屏障（Load Reference Barrier）[10]的实现，所谓“引用访问屏障”是指内存屏障只拦\n截对象中数据类型为引用类型的读写操作，而不去管原生数据类型等其他非引用字段的读写，这能够\n省去大量对原生类型、对象比较、对象加锁等场景中设置内存屏障所带来的消耗"
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4edx5x8lm80",
+                                            "created": 1727167896443,
+                                            "text": "3.6.2 ZGC收集器"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "data": {
@@ -1004,6 +1117,383 @@
                                     "note": "* JDK11\n1. 新增Epsilon收集器，只分配內存，不回收內存，內存耗盡則關閉JVM\n2. 新增ZGC(實驗性)\n\n* JDK12\n1. 新增Shenandoah收集器（實驗性）\n\n* JDK13\n1. 優化ZGC：未使用的堆內存歸還給操作系統\n\n* JDK14\n1. 通過實現NUMA-aware內存分配機制，優化G1在大機器（多處理器，NUMA架構）上的內存分配\n2. 移除CMS垃圾收集器\n3. ZGC on macOS\n4. ZGC on Windows\n5. 將Parallel Scavenge + SerialOld組合標記為已棄用\n\n* JDK15\n1. ZGC由實驗特性修改為生產特性\n2. Shenandoah由實驗特性修改為生產特性\n\n* JDK16\n1. ZGC thread-stack processing由安全點中處理改為並發處理\n\n* JDK21\n1. 擴展ZGC對不同年代的新生代和老年代對象的維護，達到更頻繁收集新生代對象的目的，從而優化程式性能\n\n* JDK22\n1. G1新增Region固定功能，通過將大對象固定在某個Region，減少大對象的移動，實現降低延遲的效果\n\n* JDK23\n1. 將ZGC的默認模式改為分代模式，並將非分代模式置為棄用，以在將來版本中將其移除"
                                 },
                                 "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4g2acbankw0",
+                                    "created": 1727338195682,
+                                    "text": "3.7 選擇合適的垃圾收集器"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4g2akmpazk0",
+                                    "created": 1727338213786,
+                                    "text": "3.8 實戰：內存分配與回收策略",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4g2j4fnou00",
+                                            "created": 1727338883809,
+                                            "text": "3.8.1 對象優先在Eden分配",
+                                            "note": "\n大多数情况下，对象在新生代Eden区中分配。当Eden区没有足够空间进行分配时，虚拟机将发起一次Minor GC\n\n-XX：+PrintGCDetails 打印GC日誌參數"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g2ka8rb340",
+                                            "created": 1727338974816,
+                                            "text": "3.8.2 大對象直接進入老年代",
+                                            "note": "了-XX：PretenureSizeThreshold\n参数，指定大于该设置值的对象直接在老年代分配，只对Serial和ParNew两款新生代收集器有效"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g2lxxngzc0",
+                                            "created": 1727339104752,
+                                            "text": "3.8.3 长期存活的对象将进入老年代"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g2mtj3m9c0",
+                                            "created": 1727339173529,
+                                            "text": "3.8.4 动态对象年龄判定",
+                                            "note": "为了能更好地适应不同程序的内存状况，HotSpot虚拟机并不是永远要求对象的年龄必须达到-\nXX：MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于\nSurvivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到-XX：\nMaxTenuringThreshold中要求的年龄。"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g2rf3ba5c0",
+                                            "created": 1727339533920,
+                                            "text": "3.8.5 空间分配担保",
+                                            "note": "在发生Minor GC之前，虚拟机必须先检查老年代最大可用的连续空间是否大于新生代所有对象总\n空间，如果这个条件成立，那这一次Minor GC可以确保是安全的。如果不成立，则虚拟机会先查看-\nXX：HandlePromotionFailure参数的设置值是否允许担保失败（Handle Promotion Failure）；如果允\n许，那会继续检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大\n于，将尝试进行一次Minor GC，尽管这次Minor GC是有风险的；如果小于，或者-XX：HandlePromotionFailure设置不允许冒险，那这时就要改为进行一次Full GC。\n\n\nJDK 6 Update 24之\n后的规则变为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小，就会进行\nMinor GC，否则将进行Full GC。\n-XX：HandlePromotionFailure不再有效"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "d4g2ueq8xjc0",
+                            "created": 1727339768223,
+                            "text": "Chapter4 虛擬機性能監控、故障處理工具",
+                            "note": "|a|b|\n|--|--|\n|a|b|",
+                            "layout_right_offset": {
+                                "x": -8,
+                                "y": -17
+                            },
+                            "expandState": "collapse"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d4gnowpxyvs0",
+                                    "created": 1727398580509,
+                                    "text": "4.2 基礎故障處理工具",
+                                    "layout_right_offset": {
+                                        "x": -8,
+                                        "y": 1
+                                    },
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4g2zdaxhds0",
+                                            "created": 1727340156941,
+                                            "text": "4.2.1 jps: 虚拟机进程状况工具",
+                                            "note": "jps（JVM Process Status Tool）它的功能也和ps命令类似：可以列出正在运行的虚拟机进\n程，并显示虚拟机执行主类（Main Class，main()函数所在的类）名称以及这些进程的本地虚拟机唯一\nID（LVMID，Local Virtual Machine Identifier）"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g30876ew00",
+                                            "created": 1727340224194,
+                                            "text": "4.2.2 jstat：虚拟机统计信息监视工具",
+                                            "note": "jstat（JVM Statistics Monitoring Tool）是用于监视虚拟机各种运行状态信息的命令行工具。它可\n以显示本地或者远程[1]虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据，在没有\nGUI图形界面、只提供了纯文本控制台环境的服务器上，它将是运行期定位虚拟机性能问题的常用工\n具。"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g32kav1p40",
+                                            "created": 1727340407266,
+                                            "text": "4.2.3　jinfo：Java配置信息工具",
+                                            "note": "jinfo（Configuration Info for Java）的作用是实时查看和调整虚拟机各项参数。使用jps命令的-v参\n数可以查看虚拟机启动时显式指定的参数列表，但如果想知道未被显式指定的参数的系统默认值，除\n了去找资料外，就只能使用jinfo的-flag选项进行查询了（如果只限于JDK 6或以上版本的话，使用java-\nXX：+PrintFlagsFinal查看参数默认值也是一个很好的选择）。jinfo还可以使用-sysprops选项把虚拟机\n进程的System.getProperties()的内容打印出来。这个命令在JDK 5时期已经随着Linux版的JDK发布，当\n时只提供了信息查询的功能，JDK 6之后，jinfo在Windows和Linux平台都有提供，并且加入了在运行期\n修改部分参数值的能力（可以使用-flag[+|-]name或者-flag name=value在运行期修改一部分运行期可写的\n虚拟机参数值）。在JDK 6中，jinfo对于Windows平台功能仍然有较大限制，只提供了最基本的-flag选\n项。\n\n格式：\njinfo [ option ] pid"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g35fr2jz40",
+                                            "created": 1727340632455,
+                                            "text": "4.2.4　jmap：Java内存映像工具",
+                                            "note": "jmap（Memory Map for Java）命令用于生成堆转储快照（一般称为heapdump或dump文件）。如\n果不使用jmap命令，要想获取Java堆转储快照也还有一些比较“暴力”的手段：譬如在第2章中用过的-\nXX：+HeapDumpOnOutOfMemoryError参数，可以让虚拟机在内存溢出异常出现之后自动生成堆转储\n快照文件，通过-XX：+HeapDumpOnCtrlBreak参数则可以使用[Ctrl]+[Break]键让虚拟机生成堆转储快\n照文件，又或者在Linux系统下通过Kill-3命令发送进程退出信号“恐吓”一下虚拟机，也能顺利拿到堆转\n储快照。\njmap的作用并不仅仅是为了获取堆转储快照，它还可以查询finalize执行队列、Java堆和方法区的\n详细信息，如空间使用率、当前用的是哪种收集器等。\n和jinfo命令一样，jmap有部分功能在Windows平台下是受限的，除了生成堆转储快照的-dump选项\n和用于查看每个类的实例、空间占用统计的-histo选项在所有操作系统中都可以使用之外，其余选项都\n只能在Linux/Solaris中使用。"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g36p5l4mw0",
+                                            "created": 1727340731288,
+                                            "text": "4.2.5　jhat：虚拟机堆转储快照分析工具",
+                                            "note": "JDK提供jhat（JVM Heap Analysis Tool）命令与jmap搭配使用，来分析jmap生成的堆转储快照。\n功能簡陋，建議使用專業dump分析工具，如：Eclipse Memory Analyser"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4g38tj1nwg0",
+                                            "created": 1727340897537,
+                                            "text": "4.2.6　jstack：Java堆栈跟踪工具",
+                                            "note": "jstack（Stack Trace for Java）命令用于生成虚拟机当前时刻的线程快照（一般称为threaddump或者\njavacore文件）。线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合，生成线程快照的\n目的通常是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间挂\n起等，都是导致线程长时间停顿的常见原因。线程出现停顿时通过jstack来查看各个线程的调用堆栈，\n就可以获知没有响应的线程到底在后台做些什么事情，或者等待着什么资源。"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d4gnpeb22vc0",
+                                    "created": 1727398618791,
+                                    "text": "4.3 可視化故障處理工具",
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4gnq1v3tew0",
+                                            "created": 1727398670070,
+                                            "text": "4.3.1　JHSDB：基于服务性代理的调试工具",
+                                            "note": "JHSDB是一款基于服务性代理（Serviceability Agent，SA）实现的进程外调试工具。服务性代理是\nHotSpot虚拟机中一组用于映射Java虚拟机运行信息的、主要基于Java语言（含少量JNI代码）实现的\nAPI集合"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4gntlwwxnk0",
+                                            "created": 1727398948807,
+                                            "text": "4.3.2　JConsole：Java监视与管理控制台"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4gnu1cgosg0",
+                                            "created": 1727398982399,
+                                            "text": "4.3.3　VisualVM：多合-故障处理工具"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4gnz77f1cw0",
+                                            "created": 1727399386976,
+                                            "text": "4.3.4　Java Mission Control：可持续在线的监控工具"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d4go4vz9o540",
+                                    "created": 1727399832723,
+                                    "text": "4.4　HotSpot虚拟机插件及工具"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "d4go8fbgsm80",
+                            "created": 1727400109912,
+                            "text": "Chapter 5 調優案例與分析實戰",
+                            "expandState": "collapse"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d4gon8w98600",
+                                    "created": 1727401271394,
+                                    "text": "5.2.1　大内存硬件上的程序部署策略"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4gonb1e3vk0",
+                                            "created": 1727401276058,
+                                            "text": "1）通过一个单独的Java虚拟机实例来管理大量的Java堆内存"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "d4gopq59z080",
+                                                    "created": 1727401465673,
+                                                    "text": "要求",
+                                                    "note": "1. 對用戶用户交互性强、对停顿时间敏感、内存又较大的系统，情況允許的話使用shenandoah、ZGC\n2. 若使用Parallel Scavenge/Old收集器，需保證FullGC頻率足夠低，十幾小時乃至1天都沒有一次FullGC,這樣可以通過在閒時通過job觸發FullGC或重啟應用來解決內存問題\n3. 控制FullGC頻率的關鍵在於老年代的相對穩定，避免成批、長時間生存的大對象產生"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "d4gotpp8b1c0",
+                                                    "created": 1727401778160,
+                                                    "text": "面臨問題",
+                                                    "note": "1. 回收大塊堆內存會導致長時間停頓，G1收集器對該問題有所緩解，Shenandoah和ZGC徹底解決\n2. 大内存必须有64位Java虚拟机的支持，但由于压缩指针、处理器缓存行容量（Cache Line）等因素，64位虚拟机的性能测试结果普遍略低于相同版本的32位虚拟机。\n3. 必须保证应用程序足够稳定，因为这种大型单体应用要是发生了堆内存溢出，几乎无法产生堆转储快照（要产生十几GB乃至更大的快照文件），哪怕成功生成了快照也难以进行分析；如果确实出了问题要进行诊断，可能就必须应用JMC这种能够在生产环境中进行的运维工具。\n4. 相同的程序在64位虚拟机中消耗的内存一般比32位虚拟机要大，这是由于指针膨胀，以及数据类型对齐补白等因素导致的，可以开启（默认即开启）压缩指针功能来缓解"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "d4gonfygsg80",
+                                            "created": 1727401286765,
+                                            "text": "2）同时使用若干个Java虚拟机，建立逻辑集群来利用硬件资源"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "d4gozmsr7c00",
+                                                    "created": 1727402242027,
+                                                    "text": "要求",
+                                                    "note": "1. 增加負載均衡器\n2. 若按職責、領域作應用拆分，需考慮狀態保留、熱轉移之類的高可用需求\n3. 若只是為了盡可能利用硬件資源，可考慮使用無Session複製的親合式集群，負載均衡器按規則算法（譬如根据Session ID分配）将一个固定的用户请求永远分配到一个固定的集群节点进行处理即可"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "d4goxnyb7vk0",
+                                                    "created": 1727402087812,
+                                                    "text": "面臨問題",
+                                                    "note": "1. 节点竞争全局的资源，最典型的就是磁盘竞争，各个节点如果同时访问某个磁盘文件的话（尤其是并发写操作容易出现问题），很容易导致I/O异常。\n2. 很难最高效率地利用某些资源池，譬如连接池，一般都是在各个节点建立自己独立的连接池，这样有可能导致一些节点的连接池已经满了，而另外一些节点仍有较多空余。尽管可以使用集中式的JNDI来解决，但这个方案有一定复杂性并且可能带来额外的性能代价。\n3. 如果使用32位Java虚拟机作为集群节点的话，各个节点仍然不可避免地受到32位的内存限制，在32位Windows平台中每个进程只能使用2GB的内存，考虑到堆以外的内存开销，堆最多一般只能开到1.5GB。在某些Linux或UNIX系统（如Solaris）中，可以提升到3GB乃至接近4GB的内存，但32位中仍然受最高4GB（2的32次幂）内存的限制。\n4. 大量使用本地缓存（如大量使用HashMap作为K/V缓存）的应用，在逻辑集群中会造成较大的内存浪费，因为每个逻辑节点上都有一份缓存，这时候可以考虑把本地缓存改为集中式缓存。"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d4gptm4hjhc0",
+                                    "created": 1727404591485,
+                                    "text": "5.2.3　堆外内存导致的溢出错误"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4gq70sav1c0",
+                                            "created": 1727405642134,
+                                            "text": "注意",
+                                            "note": "1. 堆外內存溢出不響應-XX：+HeapDumpOnOutOfMemoryError參數\n2. 堆外內存空間不足沒有通知，只能等待老年代滿後FullGC出現，順便清理直接內存的廢棄對象\n3. 可以在程式拋出內存溢出異常時，捕獲異常，再調用System.gc()觸發FullGC，以此解決直接內存溢出問題（虛擬機不能啟用-XX：+DisableExplicitGC）"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "d4j7bh71qds0",
+                                    "created": 1727657070093,
+                                    "text": "5.2.4  外部命令导致系统缓慢",
+                                    "note": "注意程式調用系統命令時的資源消耗"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4j7ctf592w0",
+                                    "created": 1727657175068,
+                                    "text": "5.2.5　服务器虚拟机进程崩溃",
+                                    "note": "避免服務同時接受大規模的請求數量，若服務無法接受大規模請求量，考慮改為消息隊列模式"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4j7e020gyw0",
+                                    "created": 1727657267875,
+                                    "text": "5.2.6　不恰当数据结构导致内存占用过大",
+                                    "note": "注意大對象存儲的空間佔用，提高對象空間效率"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4j7h2v10i80",
+                                    "created": 1727657509076,
+                                    "text": "5.2.7　由Windows虚拟内存导致的长时间停顿",
+                                    "note": "GUI桌面程序避免因為虛擬內存而導致程序性能問題，可以加入参数“-\nDsun.awt.keepWorkingSetOnMinimize=true”来避免程序閒時被交換到虛擬內存"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d4j7mzxrc5c0",
+                                    "created": 1727657972896,
+                                    "text": "5.2.8　由安全点导致长时间停顿",
+                                    "note": "参数-XX：\n+PrintSafepointStatistics和-XX：PrintSafepointStatisticsCount=1查看安全点日志\n\n添加-XX：\n+SafepointTimeout和-XX：SafepointTimeoutDelay=2000两个参数，让虚拟机在等到线程进入安全点的\n时间超过2000毫秒时就认定为超时，这样就会输出导致问题的线程名称\n\n雖然循環會放置安全點，但若循環的索引值為int類型，這種循環被稱為可數循環，虛擬機會認為該循環不會執行很長時間，故不會設置安全點。\n若使用long或更大範圍的數據類型作為索引值（不可數循環），虛擬機則會放置安全點\n\n根據上面的虛擬機安全點設置規則，在循環內程序執行時間很長，循環的索引值應考慮long類型，避免使用int類型導致虛擬機不設置安全點，進而導致其它線程等待該線程完成長時間的循環"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d4j9fxcagio0",
+                    "created": 1727663060915,
+                    "text": "虛擬機執行子系統",
+                    "layout_mind_offset": {
+                        "x": -67,
+                        "y": 45
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d4j9bx64peo0",
+                            "created": 1727662747085,
+                            "text": "Chapter6 類文件結構",
+                            "layout_mind_offset": {
+                                "x": -91,
+                                "y": 55
+                            },
+                            "note": "曾记得在第一堂计算机程序课上老师就讲过：“计算机只认识0和1，所以我们写的程序需要被编译\n器翻译成由0和1构成的二进制格式才能被计算机执行。”十多年过去了，今天的计算机仍然只能识别0\n和1，但由于最近十年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，\n把我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，越来越多的程序语\n言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d4j9c5h9mxs0",
+                                    "created": 1727662765173,
+                                    "text": "6.3 Class類文件結構"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d4jabzvdmeo0",
+                                            "created": 1727665574076,
+                                            "text": "6.3.1 魔數與Class文件的版本",
+                                            "note": "Class文件開始4個字節為：CAFEBABE\n緊接著為2字節的次版本號和2字節的主版本號"
+                                        },
+                                        "children": []
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -1015,11 +1505,11 @@
                     "created": 1720228351523,
                     "text": "虛擬機性能相關參數",
                     "layout_mind_offset": {
-                        "x": 28,
-                        "y": 0
+                        "x": 24,
+                        "y": -90
                     },
                     "note": "1. 本地線程分配緩衝",
-                    "expandState": "expand"
+                    "expandState": "collapse"
                 },
                 "children": [
                     {
@@ -1037,6 +1527,56 @@
                             "created": 1726823488014,
                             "text": "卡錶更新增加判斷",
                             "note": "在JDK 7之后，HotSpot虚拟机增加了一个新的参数-XX：+UseCondCardMark，用来决定是否开启\n卡表更新的条件判断。开启会增加一次额外判断的开销，但能够避免伪共享问题，两者各有性能损\n耗，是否打开要根据应用实际运行情况来进行测试权衡。"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d4g2iokkagw0",
+                            "created": 1727338849277,
+                            "text": "晉升老年代閾值",
+                            "note": "-XX：MaxTenuringThreshold=15"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d4gqtciz5z40",
+                            "created": 1727407391703,
+                            "text": "直接晉升老年代閾值",
+                            "note": "-XX:PretenureSizeThreshold=对象大小(单位：byte)，只对Serial和ParNew两款收集器有效"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d4e4qbc9sv40",
+                    "created": 1727141969697,
+                    "text": "虛擬機內存分析參數",
+                    "layout_mind_offset": {
+                        "x": 44,
+                        "y": 53
+                    },
+                    "expandState": "collapse"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d4e4r1s766g0",
+                            "created": 1727142027257,
+                            "text": "本地內存（直接內存）分析",
+                            "note": "NMT的全称是Native Memory Tracker ，是一个本地内存跟踪工具。\n常用来分析JVM的内存使用情况。NMT功能默认关闭，可以通过以下方式开启:\n\n\n-XX:NativeMemoryTracking=[off | summary | detail]\n\n\n開啟後通過jcmd查看內存佔用：\njcmd 17667  VM.native_memory detail scale=MB >temp.txt\n\njcmd 17667 VM.native_memory baseline --生成快照\njcmd 13527 VM.native_memory scale=MB detail.diff   --包含具体的内存分配信息\njcmd 13527 VM.native_memory scale=MB summary.diff  --只包含内存概要信息"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d4e4sfo9g2o0",
+                            "created": 1727142135858,
+                            "text": "JVM退出時打印內存使用狀況",
+                            "note": "-XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics"
                         },
                         "children": []
                     }
