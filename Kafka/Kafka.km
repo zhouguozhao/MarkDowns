@@ -1,0 +1,139 @@
+{
+    "root": {
+        "data": {
+            "id": "d5yaek2wgjs0",
+            "created": 1732845332584,
+            "text": "Kafka"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "d5yaf9ld8vc0",
+                    "created": 1732845388121,
+                    "text": "document",
+                    "note": "https://kafka.apache.org/documentation/#gettingStarted"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "d5yg4qs37rk0",
+                    "created": 1732861490186,
+                    "text": "設計"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d5yg529f76w0",
+                            "created": 1732861515179,
+                            "text": "動機"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yh33zicu00",
+                            "created": 1732864183314,
+                            "text": "持久化",
+                            "note": "kafka選擇將消息直接持久化到磁盤中，而不是寫入進程內存（其實等效於寫入Kernal的PageCache中）\n選擇持久化到磁盤的原因：現代操作系統為補償磁盤隨機讀寫、順序讀寫的巨大差異（6k倍），會選擇將所有的空閒內存用作磁盤緩存，從而提高讀寫速度。同時，kafka是構建在Jvm之上，Jvm有2個特點：\n1. 對象內存開銷非常大，通常是磁盤存儲的2倍（甚至更多）\n2. java GC越來越精細複雜，堆內存的增長會使進程變得緩慢\n\n綜合上述原因，kafka選擇了將消息直接寫入磁盤（操作系統會先把消息寫入Kernal PageCache）\n\n因kafka使用了磁盤存儲，這使得kafka擁有一般消息隊列所沒有的特性：消息可以保留很長時間（如一周），這給予了消費者很大的靈活性\n\n\n讀寫性能分析參考document 4.2 Constant Time Suffices\n\n\n\n詳情分析參考document 4.2節"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yi7hwcdhs0",
+                            "created": 1732867348164,
+                            "text": "效能",
+                            "note": "以網頁活動數據為例，該類系統會產生大量的用戶操作數據，該類系統的效能問題在於：\n1. 大量的小I/O操作\n2. 大量的字節複製\n\n針對問題1，Kafka協議建立在消息集的概念之上，一次網絡請求處理一組消息，而不是單個消息，服務器log一次寫入一組消息，消費者一次性獲取一組線性消息。\n這個簡單的優化帶來了數量級的速度提升，批量處理意味著更大的網絡包，更大的順序磁盤處理，連續的內存塊等等，這些使得kafka可以將一個突發式的隨機流轉換為線性寫入再流向消費者\n\n針對問題2，kafka在基於unix的系統上使用了sendfile系統命令來減少字節複製。\n要了解sendfile的影響，首先要了解通常情況下數據從文件到socket的傳輸路徑：\n1. 操作系統從磁盤將數據讀入kernel space的pagecache中\n2. 應用從kernel space讀取數據到用戶控件的buffer中\n3. 應用將數據寫入kernel space的socket buffer中\n4. 操作系統從socket buffer將數據複製到NIC buffer中（NIC buffer用於將數據傳輸到網絡）\n該操作包含了4次字節複製和2次系統調用。而sendfile允許直接從page cache將數據複製到NIC buffer中，減少了中間的複製動作\n\n使用上述0copy的優化，數據只需要讀取一次到pagecache，便可以被每一個消費者複用，而不是將其保存在內存中，在每次使用時將其copy到用戶空間。這項優化使得消息的消費速率接近於網絡連接的限制\n\n\npagecache+sendfile的組合使得即使消費者一直在活動，在磁盤上也沒有讀活動，這是因為消費者完全從cache中獲取數據\n\n\n當前ssl_sendfile仍未被kafka（kafka3.9）支持，因此，當ssl啟用時，sendfile不起作用\n\n\n#### 端到端壓縮\n為解決網絡帶寬限制問題，kafka提供了消息壓縮機制，生產者將批量消息壓縮並發送到broker，broker會解壓並驗證消息數量是否與頭部聲明一致等，隨後broker會將壓縮的消息存儲到log中，在消費者消費時也傳輸壓縮的消息，到達消費者後由消費者解壓"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yjw0yai3c0",
+                            "created": 1732872091491,
+                            "text": "生產者"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "d5yaeo9obyo0",
+                    "created": 1732845341701,
+                    "text": "使用場景",
+                    "expandState": "collapse"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d5yct73jygw0",
+                            "created": 1732852122008,
+                            "text": "消息隊列",
+                            "note": "kafka提供高吞吐、內置Partition、副本和高容錯機制，使其可作為一個大規模消息處理應用的優秀解決方案"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5ycta0zuw00",
+                            "created": 1732852128384,
+                            "text": "網頁活動追蹤",
+                            "note": "kafka可用於用戶活動追蹤，以滿足實時發佈訂閱需求。如將不同的用戶活動類型分到不同的topic中，用於後續訂閱實現實時處理、實時監控、加載到Hadoop或離線數據倉庫做進一步分析和出報表。由於為每個用戶活動都產生了消息，用戶活動追蹤通常是非常龐大的"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yctoxmq2w0",
+                            "created": 1732852160832,
+                            "text": "監控",
+                            "note": "kafka經常用於生產監控數據處理。如從分佈式系統中聚合統計數據，以通過生產數據產生集中式的反饋"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5ycttk7kl40",
+                            "created": 1732852170904,
+                            "text": "log聚合",
+                            "note": "通常log聚合通過收集log文件並集中處理（文件服務器或HDFS）。Kafka將文件細節抽象出去，提供更簡潔的流式log或事件數據。此做法可做到更低延遲、支持多數據源和分佈式消息消費。相較於Scribe、Flume等集中式log系統，kafka提供不亞於它們的性能，基於副本的更強的耐久性保證和更低的端到端延遲"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yctx4eegw0",
+                            "created": 1732852178656,
+                            "text": "流式處理",
+                            "note": "數據處理分為多個階段，如抽取、清洗、推送過程，可用Kafka Streamshi'xian"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5ycu41se7c0",
+                            "created": 1732852193735,
+                            "text": "EventSourcing",
+                            "note": "https://martinfowler.com/eaaDev/EventSourcing.html\n\nEventSourcing的中心思想為通過產生並記錄每一時刻的各活動狀態，達到可以重現任意時刻的系統狀態的功能"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d5yd87yfw1s0",
+                            "created": 1732853299338,
+                            "text": "Commit Log",
+                            "note": "kafka可作為分佈式系統的外部commit-log。該log幫助系統創建數據副本，並作為一個重新同步機制為出問題的節點回復它們的數據"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
