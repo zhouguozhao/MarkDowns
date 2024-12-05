@@ -152,7 +152,7 @@
                                     "id": "d61om7vml5s0",
                                     "created": 1733190108345,
                                     "text": "最少一次",
-                                    "note": null
+                                    "note": "Kafka默認消費等級\n\n消息處理方法：\n讀消息->保存其位置到log->處理消息。"
                                 },
                                 "children": []
                             },
@@ -160,7 +160,8 @@
                                 "data": {
                                     "id": "d61ombgomzc0",
                                     "created": 1733190116149,
-                                    "text": "最多一次"
+                                    "text": "最多一次",
+                                    "note": "消息處理方法：\n讀消息->處理消息->保存位置。"
                                 },
                                 "children": []
                             },
@@ -169,11 +170,20 @@
                                     "id": "d61omddhbko0",
                                     "created": 1733190120309,
                                     "text": "正好一次",
-                                    "note": null
+                                    "note": "1. 事務生產者/消費者，適用於將一個topic資料發送到另一個topic（Kafka Stream）\n\n2. 消費端保存offset，適用於消息發送到外部係統，通過將保存offset和消費消息操作放到同一個事務中，實現正好一次需求"
                                 },
                                 "children": []
                             }
                         ]
+                    },
+                    {
+                        "data": {
+                            "id": "d63ke9k43f40",
+                            "created": 1733381320563,
+                            "text": "副本",
+                            "note": "kafka可為節點中的每一個topic分區的log建立副本（副本數量by Topic配置）。這樣可以使得即使一個kafka節點下線了，仍然可以使用這些副本進行作業。\n\n副本的單位是topic的分區。在正常情況下，每個分區都由1個leader和0個或多個followers。leader數量+follower數量組成副本因子。所有寫操作都發送到分區leader，讀操作可以發送到分區leader或分區follower。follower的log和leader的log是一致的，都有相同的offset，相同順序的消息。（當然，可能存在leader的消息還沒同步到follower的情況）。\n\nfollower像一個消費者一樣從leader消費消息，然後添加到follower自己的log。此方法使得follower可以自然地將log入口打包到一起再加入到log中。\n\n#### 節點存活\nKafka通過一個叫controller的節點來管理集群broker的註冊。broker的存活需滿足下方2個條件：\n1. broker必須與controller之間維護一個活躍的session，以接受常規元數據的更新\n2. 作為分區follower的broker，必須複製leader的寫操作，且不能相差太多。\n\n"
+                        },
+                        "children": []
                     }
                 ]
             }
