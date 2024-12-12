@@ -1,6 +1,8 @@
 <h1 align="center">DesignPatterns</h1>
 
-## Iterator模式
+## 适应设计模式
+
+### Iterator模式
 
 ### 概念类图
 
@@ -47,4 +49,49 @@ banner、shouWithParen、shouWithAster实现被隐藏，可以在不修改main�
 
 
 ### 对象适配器模式
+
+#### 概念類圖
+
+![](Resources\ObjectAdapterPatternConcept.png)
+
+#### 案例類圖
+
+![](Resources\ObjectAdapterPatternExample.png)
+
+#### 案例關鍵代碼
+
+![](Resources\ObjectAdapterPatternExampleCode.png)
+
+## 交给子类
+
+### TemplateMethod模式
+
+> 在父类定义处理流程的框架，在子类实现具体处理的模式成为TemplateMethod模式
+
+#### 示例类图
+
+![](Resources\TemplateMethodExample.png)
+
+
+
+#### 示例代码
+
+![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode1.png)
+
+![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode2.png)
+
+![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode3.png)
+
+![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode4.png)
+
+
+
+#### 优势
+
+1. 父类定义了处理流程，保证了行为的一致性
+2. 子类给出不同的实现，以适应不同需求
+
+#### 注意
+
+TemplateMethod模式中，父类负责流程定义，子类负责具体实现，但具体哪部分该由父类处理，哪部分由子类处理没有确切的分界。需开发人员权衡代码复用性和复杂性作出权衡
 
