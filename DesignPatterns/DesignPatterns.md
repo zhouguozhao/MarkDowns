@@ -76,13 +76,13 @@ banner、shouWithParen、shouWithAster实现被隐藏，可以在不修改main�
 
 #### 示例代码
 
-![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode1.png)
+![](Resources\TemplateMethodExampleCode1.png)
 
-![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode2.png)
+![](Resources\TemplateMethodExampleCode2.png)
 
-![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode3.png)
+![](Resources\TemplateMethodExampleCode3.png)
 
-![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\TemplateMethodExampleCode4.png)
+![](Resources\TemplateMethodExampleCode4.png)
 
 
 
@@ -95,3 +95,40 @@ banner、shouWithParen、shouWithAster实现被隐藏，可以在不修改main�
 
 TemplateMethod模式中，父类负责流程定义，子类负责具体实现，但具体哪部分该由父类处理，哪部分由子类处理没有确切的分界。需开发人员权衡代码复用性和复杂性作出权衡
 
+
+
+### FactoryMethod模式
+
+#### 示例类图
+
+![](Resources\FactoryMethodExample.png)
+
+#### 示例代码
+
+![](Resources\FactoryMethodExampleCode1.png)
+
+![](Resources\FactoryMethodExampleCode2.png)
+
+![](Resources\FactoryMethodExampleCode3.png)
+
+![](Resources\FactoryMethodExampleCode4.png)
+
+![](Resources\FactoryMethodExampleCode5.png)
+
+#### 概念类图
+
+![](G:\gitRepos\MarkDowns\MarkDowns\DesignPatterns\Resources\FactoryMethodConcept.png)
+
+##### 注意
+
+在框架类Creator中，创建对象不要使用new，而是使用抽象方法，由ConcreteCreator实现，避免框架代码耦合具体实现代码
+
+##### 生成实例方法的具体实现
+
+1. 如示例中，将createProduct定义为抽象方法，由子类实现
+2. 提供默认实现new Product(owner)，子类没实现则走默认
+3. createProduct中默认实现抛出运行时异常，提醒开发者实现
+
+#### 优势
+
+1. 框架代码可复用，示例中，再新增Television类和对应工厂类不需要改框架代码
