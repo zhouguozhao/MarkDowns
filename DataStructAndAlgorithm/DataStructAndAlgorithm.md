@@ -71,3 +71,17 @@
 4. 从4-63删除99。如果被删元所在的树叶数据项已经是最小值，那么可以从邻节点领养一个来矫正。若邻节点也是最小数据项，那么可以合并2个树叶，如果发生父节点的节点数小于最小值，则一路向上合并，若根只剩一个节点，则删除根，剩余的节点作新根。
 
    ![](G:\gitRepos\MarkDowns\MarkDowns\DataStructAndAlgorithm\Resources\BTreeRemove1.png)
+
+
+
+## 散列
+
+### 5.3 分离链接法
+
+#### 概念
+
+![](Resources\Hashing_SeperateChaining.png)
+
+#### 类架构
+
+![](Resources\Hashing_SeperateChaining_ClassArchitecture.png)
