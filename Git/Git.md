@@ -100,3 +100,25 @@ Git 的工作就是创建和保存你的项目的快照及与之后的快照进�
 | `git fetch`  | 从远程获取代码库   |
 | `git pull`   | 下载远程代码并合并 |
 | `git push`   | 上传远程代码并合并 |
+
+
+
+
+
+### 常用命令
+
+初始化本地仓库并命名分支：`git init --initial-branch=main`
+
+初次push：`git push --set-upstream origin main`
+
+修改远程仓库地址：`git remote set-url origin https://jihulab.com/joezhougroup/neovim/nvimconfig.git`
+
+仓库账号配置设定：
+
+```shell
+git config user.name "JoeZhou"
+git config user.email "1042261820@qq.com"
+# 保存密码到文件，避免每次命令都要输入密码
+git config credential.helper store
+```
+
